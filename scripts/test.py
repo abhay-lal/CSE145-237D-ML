@@ -3,45 +3,59 @@ import torch.nn as nn
 from torchvision import models
 from torch.utils.data import DataLoader
 import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 from dataset import OwlSoundDataset
 import os
 
-# Testing model FOLD on the test set from FOLD since FOLD is trained on every other folds but the original FOLD
-
-# Setup
-FOLD = 1  # Test set fold
+# --- Config ---
 DATA_DIR = "../buowset"
 AUDIO_DIR = os.path.join(DATA_DIR, "audio")
 META_FILE = os.path.join(DATA_DIR, "meta", "metadata.csv")
-MODEL_PATH = f"../models/mobilenetv2_owl_fold{FOLD}.pth"
 BATCH_SIZE = 128
 NUM_CLASSES = 6
-DEVICE = torch.device("cuda")
+FOLD = 4
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Load metadata.csv and prepare the test set
+# --- Dataset ---
 metadata = pd.read_csv(META_FILE)
 test_df = metadata[metadata["fold"] == FOLD].reset_index(drop=True)
 test_dataset = OwlSoundDataset(test_df, AUDIO_DIR)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-# Load pre-trained MobileNetV2 model
-model = models.mobilenet_v2(pretrained=False)
-model.classifier[1] = nn.Linear(model.last_channel, NUM_CLASSES)
-model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
-model = model.to(DEVICE)
-model.eval()
+def evaluate(model, name):
+    model.eval()
+    preds, labels = [], []
 
-# Evalutation
-correct = 0
-total = 0
+    with torch.no_grad():
+        for x, y in test_loader:
+            x, y = x.to(DEVICE), y.to(DEVICE)
+            out = model(x)
+            _, p = torch.max(out, 1)
+            preds.extend(p.cpu().numpy())
+            labels.extend(y.cpu().numpy())
 
-with torch.no_grad():
-    for inputs, labels in test_loader:
-        inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
-        outputs = model(inputs)
-        _, preds = torch.max(outputs, 1)
-        correct += (preds == labels).sum().item()
-        total += labels.size(0)
+    acc = sum([p == l for p, l in zip(preds, labels)]) / len(labels)
+    print(f"{name} Accuracy: {acc:.4f}")
+    print(classification_report(labels, preds))
 
-accuracy = correct / total
-print(f"Test Accuracy on Fold {FOLD}: {accuracy:.4f}")
+    # Plot confusion matrix
+    cm = confusion_matrix(labels, preds)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+    disp.plot(cmap=plt.cm.Blues)
+    plt.title(f"{name} - Confusion Matrix")
+    plt.show()
+
+# --- MobileNetV2 ---
+mobilenet = models.mobilenet_v2(pretrained=False)
+mobilenet.classifier[1] = nn.Linear(mobilenet.last_channel, NUM_CLASSES)
+mobilenet.load_state_dict(torch.load("../models/mobilenetv2_owl.pth", map_location=DEVICE))
+mobilenet.to(DEVICE)
+evaluate(mobilenet, "MobileNetV2")
+
+# --- ProxylessNAS ---
+proxyless = torch.hub.load('mit-han-lab/ProxylessNAS', 'proxyless_mobile', pretrained=True)
+proxyless.classifier = nn.Linear(proxyless.classifier.in_features, NUM_CLASSES)
+proxyless.load_state_dict(torch.load("../models/proxylessnas_owl.pth", map_location=DEVICE))
+proxyless.to(DEVICE)
+evaluate(proxyless, "ProxylessNAS")
