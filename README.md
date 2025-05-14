@@ -21,7 +21,7 @@ CSE145ML-main/
 │
 ├── models/                          # Pretrained/exported models
 │
-├── Images/                          # Training/evaluation plots
+├── graphs/                          # Training/evaluation plots
 │
 ├── requirements.txt                # Python dependencies
 └── README.md                       # Project documentation
