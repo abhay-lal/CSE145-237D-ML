@@ -92,6 +92,6 @@ for epoch in range(NUM_EPOCHS):
     if accuracy > best_accuracy:
         best_accuracy = accuracy
         torch.save(model.state_dict(), MODEL_PATH)
-        print(f"✅ New best model saved with accuracy: {best_accuracy:.4f}")
+        print(f"New best model saved with accuracy: {best_accuracy:.4f}")
 
-print("✅ Training complete.")
+print("Training complete.")
