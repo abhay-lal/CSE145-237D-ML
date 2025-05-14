@@ -98,6 +98,31 @@ python scripts/convert_to_tflite.py
 
 ---
 
+## Model Quantization
+
+This project uses the relatively new [AI-Edge-Torch](https://github.com/google-ai-edge/ai-edge-torch) library by Google to convert PyTorch models to TFLite models, with options for `int8` quantization. Package management becomes unmanageable easily with this library, so I recommend the following:
+
+Create a fresh virtual environment and activate it:
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+Install the required dependencies. Note that this may take a long time (~20 min):
+
+```bash
+pip install -r https://raw.githubusercontent.com/google-ai-edge/ai-edge-torch/main/requirements.txt
+pip install ai-edge-torch-nightly
+```
+
+Convert and quantize the PyTorch model:
+
+```bash
+python tflite_quantize.py -model_type={ProxylessNAS OR MobileNetV2\} -model_path={PATH_TO_MODEL_PTH\} -target_path={PATH_TO_EXPORT_TO}
+```
+This will produce two files, consisting of the PyTorch model converted to TFLite format with and without int8 quantization. 
+
+---
 ## 📊 Sample Results
 
 | Metric   | ProxylessNAS | MobileNetV2 |
