@@ -105,7 +105,7 @@ metrics_df = pd.DataFrame({
     "val_recall": val_recalls,
     "val_f1": val_f1s
 })
-metrics_df.to_csv("mobilenetv2_training_metrics.csv", index=False)
+metrics_df.to_csv("../graphs/mobilenetv2_training_metrics.csv", index=False)
 
 plt.figure()
 plt.plot(metrics_df["epoch"], metrics_df["train_loss"], label="Train Loss")
@@ -113,7 +113,7 @@ plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Training Loss")
 plt.legend()
-plt.savefig("mobilenetv2_train_loss.png")
+plt.savefig("../graphs/mobilenetv2_train_loss.png")
 
 plt.figure()
 plt.plot(metrics_df["epoch"], metrics_df["val_accuracy"], label="Accuracy")
@@ -124,6 +124,6 @@ plt.xlabel("Epoch")
 plt.ylabel("Score")
 plt.title("Validation Metrics")
 plt.legend()
-plt.savefig("mobilenetv2_val_metrics.png")
+plt.savefig("../graphs/mobilenetv2_val_metrics.png")
 
 print("Training complete. Metrics saved to CSV and PNGs.")
