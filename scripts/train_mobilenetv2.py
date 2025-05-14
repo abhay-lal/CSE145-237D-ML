@@ -8,8 +8,9 @@ import pandas as pd
 from dataset import OwlSoundDataset
 from tqdm import tqdm
 import os
+import matplotlib.pyplot as plt
+from sklearn.metrics import precision_score, recall_score, f1_score
 
-# Optional: Windows-only backend fix
 torchaudio.set_audio_backend("soundfile")
 
 # === Configuration ===
@@ -25,16 +26,12 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # === Load metadata ===
 metadata = pd.read_csv(META_FILE)
-
-# Fixed folds: 0–2 for training, 3 for validation
 train_df = metadata[metadata["fold"].isin([0, 1, 2])].reset_index(drop=True)
 val_df = metadata[metadata["fold"] == 3].reset_index(drop=True)
 
-# Datasets
+# === Datasets and DataLoaders ===
 train_dataset = OwlSoundDataset(train_df, AUDIO_DIR)
 val_dataset = OwlSoundDataset(val_df, AUDIO_DIR)
-
-# DataLoaders
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
@@ -43,55 +40,90 @@ model = models.mobilenet_v2(pretrained=True)
 model.classifier[1] = nn.Linear(model.last_channel, NUM_CLASSES)
 model = model.to(DEVICE)
 
-# Loss and optimizer
+# === Loss and optimizer ===
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-# === Training loop ===
+# === Metrics tracking ===
+train_losses, val_accuracies, val_precisions, val_recalls, val_f1s = [], [], [], [], []
 best_accuracy = 0.0
 os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 
+# === Training loop ===
 for epoch in range(NUM_EPOCHS):
     model.train()
     running_loss = 0.0
-
-    train_loop = tqdm(train_loader, desc=f"Epoch {epoch+1}/{NUM_EPOCHS} [Training]")
-    for inputs, labels in train_loop:
+    for inputs, labels in tqdm(train_loader, desc=f"Epoch {epoch+1}/{NUM_EPOCHS} [Train]"):
         inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
-
         optimizer.zero_grad()
         outputs = model(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
-
         running_loss += loss.item()
-        train_loop.set_postfix(loss=loss.item())
 
     avg_train_loss = running_loss / len(train_loader)
+    train_losses.append(avg_train_loss)
     print(f"Epoch {epoch+1}, Train Loss: {avg_train_loss:.4f}")
 
     # === Validation ===
     model.eval()
-    correct = 0
-    total = 0
-
-    val_loop = tqdm(val_loader, desc=f"Epoch {epoch+1} [Validation]")
+    correct, total = 0, 0
+    all_preds, all_labels = [], []
     with torch.no_grad():
-        for inputs, labels in val_loop:
+        for inputs, labels in tqdm(val_loader, desc=f"Epoch {epoch+1} [Val]"):
             inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
             outputs = model(inputs)
             _, preds = torch.max(outputs, 1)
+            all_preds.extend(preds.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
             correct += (preds == labels).sum().item()
             total += labels.size(0)
 
-    accuracy = correct / total
-    print(f"Validation Accuracy: {accuracy:.4f}")
+    val_acc = correct / total
+    val_accuracies.append(val_acc)
+    precision = precision_score(all_labels, all_preds, average="macro", zero_division=0)
+    recall = recall_score(all_labels, all_preds, average="macro", zero_division=0)
+    f1 = f1_score(all_labels, all_preds, average="macro", zero_division=0)
+    val_precisions.append(precision)
+    val_recalls.append(recall)
+    val_f1s.append(f1)
 
-    # Save best model
-    if accuracy > best_accuracy:
-        best_accuracy = accuracy
+    print(f"Val Acc: {val_acc:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1: {f1:.4f}")
+
+    if val_acc > best_accuracy:
+        best_accuracy = val_acc
         torch.save(model.state_dict(), MODEL_PATH)
-        print(f"New best model saved with accuracy: {best_accuracy:.4f}")
+        print(f"Best model saved with accuracy: {best_accuracy:.4f}")
 
-print("Training complete.")
+# === Save CSV and Plots ===
+metrics_df = pd.DataFrame({
+    "epoch": list(range(1, NUM_EPOCHS+1)),
+    "train_loss": train_losses,
+    "val_accuracy": val_accuracies,
+    "val_precision": val_precisions,
+    "val_recall": val_recalls,
+    "val_f1": val_f1s
+})
+metrics_df.to_csv("mobilenetv2_training_metrics.csv", index=False)
+
+plt.figure()
+plt.plot(metrics_df["epoch"], metrics_df["train_loss"], label="Train Loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Training Loss")
+plt.legend()
+plt.savefig("mobilenetv2_train_loss.png")
+
+plt.figure()
+plt.plot(metrics_df["epoch"], metrics_df["val_accuracy"], label="Accuracy")
+plt.plot(metrics_df["epoch"], metrics_df["val_precision"], label="Precision")
+plt.plot(metrics_df["epoch"], metrics_df["val_recall"], label="Recall")
+plt.plot(metrics_df["epoch"], metrics_df["val_f1"], label="F1 Score")
+plt.xlabel("Epoch")
+plt.ylabel("Score")
+plt.title("Validation Metrics")
+plt.legend()
+plt.savefig("mobilenetv2_val_metrics.png")
+
+print("Training complete. Metrics saved to CSV and PNGs.")
