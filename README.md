@@ -126,7 +126,7 @@ Model formats:
 
 * **Abhay Lal** – M.S. CSE, UC San Diego
 * **Zach Lawrence** – B.S. Computer Science, UC San Diego
-* **Max Shen** – B.S. Computer Science, UC San Diego
+* **Max Shen** – B.S. Computer Engineering, UC San Diego
 
 ---
 
