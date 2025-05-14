@@ -138,4 +138,4 @@ MIT License. Feel free to use and modify.
 
 ## 📚 Acknowledgements
 
-Special thanks to the CSE 145/237D Embedded System Design Project course instructors at UC San Diego for project guidance and to the creators of BUOWSET for providing the dataset.
+Special thanks to the CSE 145/237D Embedded System Design Project course instructors at UC San Diego for project guidance and to the creators of BUOWSET for providing the dataset.Also special mention to Ludwig for initiating this project and being a helpful mentor to work with. 
