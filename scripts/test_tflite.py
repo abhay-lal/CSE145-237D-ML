@@ -8,12 +8,14 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classifica
 from dataset import OwlSoundDataset
 from tqdm import tqdm
 import os
+from ai_edge_litert.interpreter import Interpreter
+import numpy as np
 
 # --- Config ---
 DATA_DIR = "../buowset"
 AUDIO_DIR = os.path.join(DATA_DIR, "audio")
 META_FILE = os.path.join(DATA_DIR, "meta", "metadata.csv")
-BATCH_SIZE = 128
+BATCH_SIZE = 1
 NUM_CLASSES = 6
 FOLD = 4
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -30,16 +32,22 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 # --- Evaluation function ---
 accuracies = {}
 
-def evaluate(model, name):
+def evaluate(interpreter, name):
     preds, labels = [], []
-
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
     for x, y in tqdm(test_loader, desc=f"Evaluating {name}"):
-        # x, y = x.to(DEVICE), y.to(DEVICE)
-        out = model(x)
-        _, p = torch.max(out, 1)
+        if(x.shape[3] != input_details[0]['shape'][3]):
+            print('Warning: skipping input due to shape mismatch in time dimension')
+            continue
+        interpreter.set_tensor(input_details[0]['index'], x)
+        interpreter.invoke()
+        out = interpreter.get_tensor(output_details[0]['index'])
+        p = np.argmax(out, axis=1)
         preds.extend(p)
         labels.extend(y)
 
+    print(labels)
     acc = sum([p == l for p, l in zip(preds, labels)]) / len(labels)
     accuracies[name] = acc
 
@@ -60,18 +68,16 @@ def evaluate(model, name):
     plt.show()
 
 # --- Evaluate MobileNetV2 ---
-mobilenet = models.mobilenet_v2(pretrained=False)
-mobilenet.classifier[1] = nn.Linear(mobilenet.last_channel, NUM_CLASSES)
-mobilenet.load_state_dict(torch.load("../models/mobilenetv2_owl_int8.tflite", map_location=DEVICE))
-mobilenet.to(DEVICE)
-evaluate(mobilenet, "MobileNetV2")
+mv2_interpreter = Interpreter(model_path='../models/tflite/mobilenetv2_owl_int8.tflite')
+mv2_interpreter.allocate_tensors()
+
+evaluate(mv2_interpreter, "MobileNetV2_int8")
 
 # --- Evaluate ProxylessNAS ---
-proxyless = torch.hub.load('mit-han-lab/ProxylessNAS', 'proxyless_mobile', pretrained=True)
-proxyless.classifier = nn.Linear(proxyless.classifier.in_features, NUM_CLASSES)
-proxyless.load_state_dict(torch.load("../models/proxylessnas_int8.tflite", map_location=DEVICE))
-proxyless.to(DEVICE)
-evaluate(proxyless, "ProxylessNAS")
+proxyless_interpreter = Interpreter(model_path='../models/tflite/proxylessnas_owl_int8.tflite')
+proxyless_interpreter.allocate_tensors()
+
+evaluate(proxyless_interpreter, "ProxylessNAS_int8")
 
 # --- Accuracy Comparison Plot ---
 plt.figure(figsize=(6, 4))
