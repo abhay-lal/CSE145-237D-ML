@@ -4,5 +4,8 @@ torchaudio
 pandas
 matplotlib
 soundfile 
+tf
+ai-edge-torch
+scikit-learn
 # soundfile is needed for Windows only but not for MacOS
 # it is needed for torchaudio to interact with .wav files

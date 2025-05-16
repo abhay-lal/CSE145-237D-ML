@@ -38,6 +38,7 @@ def evaluate(model, name):
         for x, y in tqdm(test_loader, desc=f"Evaluating {name}"):
             x, y = x.to(DEVICE), y.to(DEVICE)
             out = model(x)
+            #Argmax?
             _, p = torch.max(out, 1)
             preds.extend(p.cpu().numpy())
             labels.extend(y.cpu().numpy())
