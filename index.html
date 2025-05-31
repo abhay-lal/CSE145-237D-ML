@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TinyML Owl Vocalization Classifier</title>
+  <style>
+    /* ---------- Base Styles ---------- */
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- Header & Navigation ---------- */
+    header {
+      background-color: #2c3e50;
+      color: #ffffff;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    nav {
+      background-color: #34495e;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav a {
+      color: #ecf0f1;
+      padding: 0.75rem 1.25rem;
+      margin: 0 0.25rem;
+      font-weight: bold;
+      transition: background 0.2s;
+      border-radius: 4px;
+    }
+    nav a:hover {
+      background-color: #2c3e50;
+    }
+
+    /* ---------- Section Styles ---------- */
+    section {
+      padding: 3rem 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .section-title {
+      border-bottom: 2px solid #bdc3c7;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+    .links-list {
+      list-style: none;
+      padding: 0;
+    }
+    .links-list li {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+    footer a {
+      color: #ecf0f1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========= HEADER ========= -->
+  <header>
+    <h1>TinyML Owl Vocalization Classifier</h1>
+    <p>
+      On‐device detection and classification of burrowing‐owl calls using a TinyML pipeline on STM32H7.
+    </p>
+  </header>
+
+  <!-- ========= NAVIGATION ========= -->
+  <nav>
+    <a href="#overview">Overview</a>
+    <a href="#resources">Resources</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- ========= OVERVIEW SECTION ========= -->
+  <section id="overview">
+    <h2 class="section-title">Project Overview</h2>
+    <p>
+      This project implements a lightweight TinyML pipeline to process burrowing‐owl audio recordings, convert them to Mel spectrograms, train compact neural networks (MobileNetV2 &amp; ProxylessNAS), quantize to int8, and deploy the final model on an STM32H7 microcontroller.  
+      Key features:
+    </p>
+    <ul>
+      <li>64‐band Mel spectrogram preprocessing (Python + Torchaudio)</li>
+      <li>Model training on BUOWSET dataset with 6 vocalization classes</li>
+      <li>Quantization (PyTorch→ONNX→TensorFlow→TFLite int8) and C‐header generation</li>
+      <li>On‐chip DSP (KissFFT/CMSIS‐DSP), inference loop, and power‐saving sleep/wake logic</li>
+    </ul>
+    <p>
+      For full setup instructions, folder structure, and detailed steps, please see the project’s <a href="https://github.com/your-username/TinyML-Owl-Project/blob/main/README.md" target="_blank">README</a>.
+    </p>
+  </section>
+
+  <!-- ========= RESOURCES SECTION ========= -->
+  <section id="resources">
+    <h2 class="section-title">Quick Links &amp; Resources</h2>
+    <ul class="links-list">
+      <li>
+        <strong>GitHub Repository:</strong>
+        <a href="https://github.com/your-username/TinyML-Owl-Project" target="_blank">
+          github.com/your-username/TinyML-Owl-Project
+        </a>
+      </li>
+      <li>
+        <strong>Wiki (Documentation &amp; Organization):</strong>
+        <a href="https://github.com/your-username/TinyML-Owl-Project/wiki" target="_blank">
+          github.com/your-username/TinyML-Owl-Project/wiki
+        </a>
+      </li>
+      <li>
+        <strong>Milestone Progress Report (PDF):</strong>
+        <a href="docs/CSE_145__TinyML_Milestone_Progress_Report.pdf" target="_blank">
+          docs/CSE_145__TinyML_Milestone_Progress_Report.pdf
+        </a>
+      </li>
+      <li>
+        <strong>Demo Video (YouTube):</strong>
+        <a href="https://www.youtube.com/watch?v=L2aSu9MTcUA" target="_blank">
+          https://youtu.be/L2aSu9MTcUA
+        </a>
+      </li>
+      <li>
+        <strong>Hardware STM32 DSP Code:</strong>
+        <a href="https://github.com/your-username/TinyML-Owl-Project/tree/main/hardware" target="_blank">
+          /hardware
+        </a>
+      </li>
+      <li>
+        <strong>Software ML &amp; Quantization:</strong>
+        <a href="https://github.com/your-username/TinyML-Owl-Project/tree/main/software" target="_blank">
+          /software
+        </a>
+      </li>
+      <li>
+        <strong>Class Slides (PDF):</strong>
+        <a href="docs/class_slides.pdf" target="_blank">
+          docs/class_slides.pdf
+        </a>
+      </li>
+      <li>
+        <strong>Additional Resources &amp; Images:</strong>
+        <a href="docs/additional-resources/" target="_blank">
+          docs/additional-resources/
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ========= CONTACT SECTION ========= -->
+  <section id="contact">
+    <h2 class="section-title">Contact &amp; Team</h2>
+    <p>
+      For questions or clarifications, reach out to the project lead:
+      <br />
+    </p>
+    <p>
+      See the full list of contributors and their roles on the <a href="https://github.com/your-username/TinyML-Owl-Project/wiki/Team" target="_blank">Wiki Team page</a>.
+    </p>
+  </section>
+
+  <!-- ========= FOOTER ========= -->
+  <footer>
+    <p>
+      &copy; 2025 TinyML Owl Vocalization Classifier.  
+      Hosted on <a href="https://github.com/your-username/TinyML-Owl-Project" target="_blank">GitHub</a>.
+    </p>
+  </footer>
+
+</body>
+</html>
