@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="./images/owl.svg" type="image/x-icon">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TinyML Owl Vocalization Classifier</title>
+  <title>TinyML‐Based Burrowing Owl Acoustic Detection</title>
   <style>
     /* ---------- Base Styles ---------- */
     html {
@@ -12,7 +13,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      line-height: 1.6;
+      line-height: 1.4;
       color: #333;
     }
     a {
@@ -62,14 +63,14 @@
 
     /* ---------- Section Styles ---------- */
     section {
-      padding: 3rem 1rem;
+      padding: 2rem 0.5rem;
       max-width: 800px;
       margin: 0 auto;
     }
     .section-title {
-      border-bottom: 2px solid #bdc3c7;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #bdc3c7;
+      margin-bottom: 0.7rem;
+      padding-bottom: 0.2rem;
       color: #2c3e50;
     }
     .links-list {
@@ -99,19 +100,32 @@
 
   <!-- ========= HEADER ========= -->
   <header>
-    <h1>TinyML Owl Vocalization Classifier</h1>
+    <h1>TinyML‐Based Burrowing Owl Acoustic Detection </h1>
+      <img
+    src="./images/header-owl-stm32.png"
+    alt="Burrowing owl perched on STM32 chip with audio waveforms"
+    style="width:50%; max-height:450px; object-fit:cover;"
+  />
     <p>
       On‐device detection and classification of burrowing‐owl calls using a TinyML pipeline on STM32H7.
     </p>
   </header>
 
+  
   <!-- ========= NAVIGATION ========= -->
   <nav>
+    <a href="#Abstract">Abstract</a>
     <a href="#overview">Overview</a>
     <a href="#resources">Resources</a>
-    <a href="#contact">Contact</a>
+    <a href="#team">Team</a>
   </nav>
-
+  <!-- ========= ABSTRACT SECTION ========= -->
+    <section id="Abstract">
+    <h2 class="section-title">Abstract</h2>
+     <p>
+    A keystone species, burrowing owls convey crucial ecological information through their vocalizations.  This project creates a whole TinyML pipeline that listens for, recognizes, and categorizes six different burrowing-owl sounds in real time, all of which are controlled by an STM32H7 microcontroller.  To train lightweight CNNs (Custom Tiny CNN, MobileNetV2, ProxylessNAS) on the BUOWSET dataset, we transform raw audio into 64-band Mel spectrograms, quantize the model to int8, and embed it as a C header for on-device inference.  Battery-powered operation for wildlife monitoring is made possible by a straightforward sleep/wake heuristic that keeps the MCU in low-power mode until it detects owl sounds.  
+    </p>
+    </section>
   <!-- ========= OVERVIEW SECTION ========= -->
     <section id="overview">
     <h2 class="section-title">Project Overview</h2>
@@ -224,17 +238,6 @@
     </div>
   </div>
 </section>
-  <!-- ========= CONTACT SECTION ========= -->
-  <section id="contact">
-    <h2 class="section-title">Contact &amp; Team</h2>
-    <p>
-      For questions or clarifications, reach out to the project lead:
-      <br />
-    </p>
-    <p>
-      See the full list of contributors and their roles on the <a href="https://github.com/your-username/TinyML-Owl-Project/wiki/Team" target="_blank">Wiki Team page</a>.
-    </p>
-  </section>
 
   <!-- ========= FOOTER ========= -->
   <footer>
