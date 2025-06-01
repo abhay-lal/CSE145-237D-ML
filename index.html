@@ -122,7 +122,7 @@
     <section id="Abstract">
     <h2 class="section-title">Abstract</h2>
      <p>
-    A keystone species, burrowing owls convey crucial ecological information through their vocalizations.  This project creates a whole TinyML pipeline that listens for, recognizes, and categorizes six different burrowing-owl sounds in real time, all of which are controlled by an STM32H7 microcontroller.  To train lightweight CNNs (Custom Tiny CNN, MobileNetV2, ProxylessNAS) on the BUOWSET dataset, we transform raw audio into 64-band Mel spectrograms, quantize the model to int8, and embed it as a C header for on-device inference.  Battery-powered operation for wildlife monitoring is made possible by a straightforward sleep/wake heuristic that keeps the MCU in low-power mode until it detects owl sounds.  
+    A keystone species, burrowing owls convey crucial ecological information through their vocalizations.  This project creates a whole TinyML pipeline that listens for, recognizes, and categorizes six different burrowing-owl sounds in real time, all of which are controlled by an STM32H7 microcontroller.  To train lightweight CNNs (Custom Tiny CNN, MobileNetV2, ProxylessNAS) on the BUOWSET dataset, we transform raw audio into 64-band Mel spectrograms, quantize the model to int8, and embed it as a C header for on-device inference.   
     </p>
     </section>
   <!-- ========= OVERVIEW SECTION ========= -->
@@ -133,16 +133,10 @@
     </p>
     <ul>
         <li>≥ 90 % classification accuracy on the BUOWSET test set</li>
-        <li>Flash/RAM footprint ≲ 0.5 MB after quantization</li>
-        <li>On-chip Mel-filterbank DSP (KissFFT or CMSIS-DSP) and inference loop</li>
-        <li>Sleep/wake heuristic to minimize MCU power consumption</li>
+        <li>Flash/RAM footprint ≤ 0.5 MB after quantization</li>
+        <li>On-chip Mel-filterbank DSP and inference loop</li>
+        <li>Optimized inference code generated via X-Cube-AI for STM32</li>
     </ul>
-    <p>
-        For detailed setup, folder structure, and step-by-step instructions, see the
-        <a href="https://github.com/Maxshen/TinyML-Owl-Project/blob/main/README.md" target="_blank">
-        README
-        </a>.
-    </p>
     </section>
     <!-- ========= RESOURCES SECTION ========= -->
 <section id="resources">
