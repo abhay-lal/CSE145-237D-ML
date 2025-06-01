@@ -151,6 +151,97 @@
         <li>Optimized inference code generated via X-Cube-AI for STM32</li>
     </ul>
     </section>
+
+    <!-- Models Used -->
+  <section id="models">
+    <h2 class="section-title">Models Used</h2>
+    <p>
+      We trained three compact CNN architectures optimized for on-device inference on STM32H7. Final validation accuracy and F1 score (epoch 20) are shown below:
+    </p>
+    <ul>
+      <li>
+        <strong>Custom Tiny CNN</strong>  
+        &mdash; Accuracy: 94.8 %, F1 Score: 84.0 %
+      </li>
+      <li>
+        <strong>MobileNetV2</strong>  
+        &mdash; Accuracy: 97.7 %, F1 Score: 91.8 %
+      </li>
+      <li>
+        <strong>ProxylessNAS</strong>  
+        &mdash; Accuracy: 97.3 %, F1 Score: 91.9 %
+      </li>
+    </ul>
+  </section>
+
+  <section id="training-curves">
+  <h2 class="section-title">Training Curves</h2>
+  <div class="grid-container" style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  ">
+    <!-- Custom Tiny CNN: Loss -->
+    <div class="grid-item">
+      <h3 style="margin-bottom: 0.5rem;">Custom Tiny CNN: Train &amp; Val Loss</h3>
+      <img
+        src="./graphs/Custom-TinyCNN_loss.png"
+        alt="Custom Tiny CNN Training vs Validation Loss"
+        style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 0.5rem; background-color: #fff;"
+      />
+    </div>
+
+    <!-- Custom Tiny CNN: Precision/Recall/F1 -->
+    <div class="grid-item">
+      <h3 style="margin-bottom: 0.5rem;">Custom Tiny CNN: Precision, Recall, F1</h3>
+      <img
+        src="./graphs/Custom-TinyCNN_val_metrics_curve.png"
+        alt="Custom Tiny CNN Precision, Recall, and F1 over Epochs"
+        style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 0.5rem; background-color: #fff;"
+      />
+    </div>
+
+    <!-- MobileNetV2: Loss -->
+    <div class="grid-item">
+      <h3 style="margin-bottom: 0.5rem;">MobileNetV2: Train &amp; Val Loss</h3>
+      <img
+        src="./graphs/mobilenetv2_train_loss.png"
+        alt="MobileNetV2 Training vs Validation Loss"
+        style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 0.5rem; background-color: #fff;"
+      />
+    </div>
+
+    <!-- MobileNetV2: Validation Metrics -->
+    <div class="grid-item">
+      <h3 style="margin-bottom: 0.5rem;">MobileNetV2: Validation Metrics</h3>
+      <img
+        src="./graphs/mobilenetv2_val_metrics.png"
+        alt="MobileNetV2 Validation Accuracy, Precision, Recall, F1"
+        style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 0.5rem; background-color: #fff;"
+      />
+    </div>
+
+    <!-- ProxylessNAS: Loss -->
+    <div class="grid-item">
+      <h3 style="margin-bottom: 0.5rem;">ProxylessNAS: Train &amp; Val Loss</h3>
+      <img
+        src="./graphs/proxylessnas_train_loss.png"
+        alt="ProxylessNAS Training vs Validation Loss"
+        style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 0.5rem; background-color: #fff;"
+      />
+    </div>
+
+    <!-- ProxylessNAS: Validation Metrics -->
+    <div class="grid-item">
+      <h3 style="margin-bottom: 0.5rem;">ProxylessNAS: Validation Metrics</h3>
+      <img
+        src="./graphs/proxylessnas_metrics.png"
+        alt="ProxylessNAS Validation Accuracy, Precision, Recall, F1"
+        style="max-width: 100%; height: auto; border: 1px solid #ddd; padding: 0.5rem; background-color: #fff;"
+      />
+    </div>
+  </div>
+</section>
     <!-- ========= RESOURCES SECTION ========= -->
 <section id="resources">
   <h2 class="section-title">Quick Links &amp; Resources</h2>
@@ -241,12 +332,16 @@
     </div>
   </div>
 </section>
-  <!-- ========= ACKNOWLEDGEMENTS SECTION ========= -->
+<!-- ========= ACKNOWLEDGEMENTS SECTION ========= -->
 <section id="acknowledgements">
   <h2 class="section-title">Acknowledgements</h2>
   <p>
     We gratefully acknowledge the support and data provided by the 
-    <strong><a href="https://e4e.ucsd.edu/about" target="_blank">Engineers For Exploration (E4E)</a></strong> program at UC San Diego. E4E is a student group developing technology to advance exploration across diverse environments.
+    <strong>
+      <a href="https://e4e.ucsd.edu/acoustic-species-identification/" target="_blank">
+        Engineers For Exploration (E4E) Acoustic Species Identification Lab
+      </a>
+    </strong> at UC San Diego. E4E is a research group focused on protecting the environment, uncovering mysteries related to cultural heritage, and providing experiential learning experiences for undergraduate and graduate students.
   </p>
   <p>
     This work was conducted in collaboration with the 
@@ -254,6 +349,10 @@
   </p>
   <p>
     We also thank <strong>Professor Ryan Kastner</strong> for his guidance and support throughout this project.
+  </p>
+  <p>
+    <strong>Contact & Project Lead at E4E:</strong><br />
+   Lauren Von Schoenfeldt - <a href="mailto:lvonschoenfeldt@ucsd.edu">lvonschoenfeldt@ucsd.edu</a>
   </p>
 </section>
   <!-- ========= FOOTER ========= -->
