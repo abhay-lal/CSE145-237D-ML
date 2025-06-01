@@ -113,78 +113,117 @@
   </nav>
 
   <!-- ========= OVERVIEW SECTION ========= -->
-  <section id="overview">
+    <section id="overview">
     <h2 class="section-title">Project Overview</h2>
     <p>
-      This project implements a lightweight TinyML pipeline to process burrowing‐owl audio recordings, convert them to Mel spectrograms, train compact neural networks (MobileNetV2 &amp; ProxylessNAS), quantize to int8, and deploy the final model on an STM32H7 microcontroller.  
-      Key features:
+        Our goal is to build a TinyML-based system that runs entirely on an STM32H7 board to listen for, detect, and classify six different burrowing-owl vocalizations in real time. By converting audio to 64-band Mel spectrograms, training lightweight CNNs (MobileNetV2 and ProxylessNAS) on the BUOWSET dataset, then quantizing to int8 and embedding the model as a C header, we achieve:
     </p>
     <ul>
-      <li>64‐band Mel spectrogram preprocessing (Python + Torchaudio)</li>
-      <li>Model training on BUOWSET dataset with 6 vocalization classes</li>
-      <li>Quantization (PyTorch→ONNX→TensorFlow→TFLite int8) and C‐header generation</li>
-      <li>On‐chip DSP (KissFFT/CMSIS‐DSP), inference loop, and power‐saving sleep/wake logic</li>
+        <li>≥ 90 % classification accuracy on the BUOWSET test set</li>
+        <li>Flash/RAM footprint ≲ 0.5 MB after quantization</li>
+        <li>On-chip Mel-filterbank DSP (KissFFT or CMSIS-DSP) and inference loop</li>
+        <li>Sleep/wake heuristic to minimize MCU power consumption</li>
     </ul>
     <p>
-      For full setup instructions, folder structure, and detailed steps, please see the project’s <a href="https://github.com/your-username/TinyML-Owl-Project/blob/main/README.md" target="_blank">README</a>.
+        For detailed setup, folder structure, and step-by-step instructions, see the
+        <a href="https://github.com/Maxshen/TinyML-Owl-Project/blob/main/README.md" target="_blank">
+        README
+        </a>.
     </p>
-  </section>
+    </section>
+    <!-- ========= RESOURCES SECTION ========= -->
+<section id="resources">
+  <h2 class="section-title">Quick Links &amp; Resources</h2>
 
-  <!-- ========= RESOURCES SECTION ========= -->
-  <section id="resources">
-    <h2 class="section-title">Quick Links &amp; Resources</h2>
-    <ul class="links-list">
-      <li>
-        <strong>GitHub Repository:</strong>
-        <a href="https://github.com/your-username/TinyML-Owl-Project" target="_blank">
-          github.com/your-username/TinyML-Owl-Project
-        </a>
-      </li>
-      <li>
-        <strong>Wiki (Documentation &amp; Organization):</strong>
-        <a href="https://github.com/your-username/TinyML-Owl-Project/wiki" target="_blank">
-          github.com/your-username/TinyML-Owl-Project/wiki
-        </a>
-      </li>
-      <li>
-        <strong>Milestone Progress Report (PDF):</strong>
-        <a href="docs/CSE_145__TinyML_Milestone_Progress_Report.pdf" target="_blank">
-          docs/CSE_145__TinyML_Milestone_Progress_Report.pdf
-        </a>
-      </li>
-      <li>
-        <strong>Demo Video (YouTube):</strong>
-        <a href="https://www.youtube.com/watch?v=L2aSu9MTcUA" target="_blank">
-          https://youtu.be/L2aSu9MTcUA
-        </a>
-      </li>
-      <li>
-        <strong>Hardware STM32 DSP Code:</strong>
-        <a href="https://github.com/your-username/TinyML-Owl-Project/tree/main/hardware" target="_blank">
-          /hardware
-        </a>
-      </li>
-      <li>
-        <strong>Software ML &amp; Quantization:</strong>
-        <a href="https://github.com/your-username/TinyML-Owl-Project/tree/main/software" target="_blank">
-          /software
-        </a>
-      </li>
-      <li>
-        <strong>Class Slides (PDF):</strong>
-        <a href="docs/class_slides.pdf" target="_blank">
-          docs/class_slides.pdf
-        </a>
-      </li>
-      <li>
-        <strong>Additional Resources &amp; Images:</strong>
-        <a href="docs/additional-resources/" target="_blank">
-          docs/additional-resources/
-        </a>
-      </li>
-    </ul>
-  </section>
+  <!-- Hardware & Software Repos -->
+  <h3>Hardware &amp; Software Repositories</h3>
+  <ul>
+    <li>
+      <strong>Hardware STM32 DSP Code:</strong>
+      <a href="https://github.com/rkwhitlock/acoustic-species-hardware" target="_blank">
+        STM32-Acoustic-Species-Hardware
+      </a>
+    </li>
+    <li>
+      <strong>Software ML &amp; Quantization:</strong>
+      <a href="https://github.com/Maxshen/TinyML-Owl-Project" target="_blank">
+        TinyML-Owl-Acoustic-Species
+      </a>
+    </li>
+  </ul>
 
+  <!-- Documentation & Reports -->
+  <h3>Documentation &amp; Reports</h3>
+  <ul>
+    <li>
+      <strong>Documentation Folder (Milestone Report, Project Spec):</strong><br />
+      <ul>
+        <li>
+          <a href="https://github.com/Maxshen/TinyML-Owl-Project/blob/main/docs/CSE_145__TinyML_Milestone_Progress_Report.pdf" target="_blank">
+            CSE_145__TinyML_Milestone_Progress_Report.pdf
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/Maxshen/TinyML-Owl-Project/blob/main/docs/Project_Specification.pdf" target="_blank">
+            Project_Specification.pdf
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <!-- Media & Slides -->
+  <h3>Media &amp; Slides</h3>
+  <ul>
+    <li>
+      <strong>Model Demo Video (YouTube):</strong>
+      <a href="https://www.youtube.com/watch?v=L2aSu9MTcUA" target="_blank">
+        https://youtu.be/L2aSu9MTcUA
+      </a>
+    </li>
+    <li>
+      <strong>Class Slides (PDF):</strong>
+      <a href="https://ucsdcloud-my.sharepoint.com/:p:/g/personal/zhs009_ucsd_edu/EQn1GRxftuVEnQw48e4icrIBoQagHobwAcO5oHA8a44ctQ?e=zF2Vzy" target="_blank">
+        Slides Link
+      </a>
+    </li>
+  </ul>
+
+  <!-- Wiki & README -->
+  <h3>Wiki &amp; README</h3>
+  <ul>
+    <li>
+      <strong>GitHub README (Documentation):</strong><br />
+      <a href="https://github.com/ZhenmanShen/CSE145-237D-ML/blob/main/README.md" target="_blank">
+        ZhenmanShen/CSE145-237D-ML-README.md
+      </a>
+    </li>
+  </ul>
+</section>
+    <!-- ========= TEAM SECTION ========= -->
+    <section id="team">
+  <h2 class="section-title">Team Members</h2>
+  <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+    <!-- Software Team Column -->
+    <div style="flex: 1; min-width: 200px;">
+      <h3>Software</h3>
+      <ul>
+        <li>Zach Lawrence</li>
+        <li>Abhay Lal</li>
+        <li>Max Shen</li>
+      </ul>
+    </div>
+    <!-- Hardware Team Column -->
+    <div style="flex: 1; min-width: 200px;">
+      <h3>Hardware</h3>
+      <ul>
+        <li>Kruti Dharanipathi</li>
+        <li>Reese Whitlock</li>
+        <li>Ben Scott</li>
+      </ul>
+    </div>
+  </div>
+</section>
   <!-- ========= CONTACT SECTION ========= -->
   <section id="contact">
     <h2 class="section-title">Contact &amp; Team</h2>
