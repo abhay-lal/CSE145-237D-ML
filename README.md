@@ -10,14 +10,14 @@ This repository provides training and evaluation pipelines for deep learning mod
 CSE145ML-main/
 │
 ├── scripts/
-│   ├── train_tinycnn.py             # Train Custom TinyCNN model
+│   ├── Custom-TinyCNN.py            # Train Custom TinyCNN model
 │   ├── TinyCNN-to-TfLite.py         # Convert TinyCNN to TFLite and C header
 │   ├── Torch_C_header.py            # Convert ProxylessNAS to TFLite + header (benchmark only)
 │   ├── tflite_quantize.py           # AI-Edge quantization for benchmarking models
 │   ├── test_tflite.py               # Evaluate TFLite models and plot accuracy
 │   ├── test.py                      # Evaluate trained models
-│   ├── convert_to_tflite.py         # (Legacy) Convert PyTorch to TFLite
-│   ├── export_to_onnx.py            # (Deprecated) Convert PyTorch to ONNX
+│   ├── train_proxylessnas.py        # Train ProxylessNAS model
+│   ├── train_proxylessnas_abhay.py  # Custom ProxylessNAS variant
 │   └── dataset.py                   # OwlSoundDataset class
 │
 ├── models/                          # Pretrained/exported models
@@ -52,7 +52,7 @@ pip install -r requirements.txt
 ### 2. Train Model
 
 ```bash
-python scripts/train_tinycnn.py
+python scripts/Custom-TinyCNN.py
 ```
 
 This will train the **TinyCNN model**, which is used for final STM32 deployment.
