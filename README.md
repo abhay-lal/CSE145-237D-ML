@@ -125,7 +125,7 @@ This header can be included directly in embedded C projects using **TF-Lite Micr
 
 | Metric   | ProxylessNAS | MobileNetV2 | TinyCNN |
 | -------- | ------------ | ----------- | ------- |
-| Accuracy | 97.2%        | 97.69%       | 95.3%   |
+| Accuracy | 97.2%        | 97.69%      | 95.3%   |
 | F1-Score | 0.92         | 0.92        | 0.84    |
 
 > TinyCNN offers a compact trade-off with deployment feasibility on embedded hardware.
