@@ -1,6 +1,6 @@
-# 🦩 Burrowing Owl Call Classifier
+# 🦉 Burrowing Owl Call Classifier
 
-This repository provides training and evaluation pipelines for deep learning models to classify **burrowing owl vocalizations** using spectrograms derived from audio signals. It supports lightweight model architectures like MobileNetV2 and ProxylessNAS and enables export to ONNX and TFLite formats for deployment on embedded devices.
+This repository provides training and evaluation pipelines for deep learning models to classify **burrowing owl vocalizations** using spectrograms derived from audio signals. It includes a custom-designed **TinyCNN** optimized for embedded deployment on STM32 microcontrollers, with optional comparison to baseline models like MobileNetV2 and ProxylessNAS.
 
 ---
 
@@ -10,21 +10,20 @@ This repository provides training and evaluation pipelines for deep learning mod
 CSE145ML-main/
 │
 ├── scripts/
-│   ├── train_mobilenetv2.py         # Train MobileNetV2 model
-│   ├── train_proxylessnas.py        # Train ProxylessNAS model
-│   ├── train_proxylessnas_abhay.py  # Custom ProxylessNAS variant
+│   ├── train_tinycnn.py             # Train Custom TinyCNN model
+│   ├── TinyCNN-to-TfLite.py         # Convert TinyCNN to TFLite and C header
+│   ├── Torch_C_header.py            # Convert ProxylessNAS to TFLite + header (benchmark only)
+│   ├── tflite_quantize.py           # AI-Edge quantization for benchmarking models
+│   ├── test_tflite.py               # Evaluate TFLite models and plot accuracy
 │   ├── test.py                      # Evaluate trained models
-│   ├── convert_to_tflite.py         # Convert PyTorch to TFLite
-│   ├── export_to_onnx.py            # Convert PyTorch to ONNX
-│   ├── codegen.ipynb                # TinyML deployment notebook
+│   ├── convert_to_tflite.py         # (Legacy) Convert PyTorch to TFLite
+│   ├── export_to_onnx.py            # (Deprecated) Convert PyTorch to ONNX
 │   └── dataset.py                   # OwlSoundDataset class
 │
 ├── models/                          # Pretrained/exported models
-│
 ├── graphs/                          # Training/evaluation plots
-│
-├── requirements.txt                # Python dependencies
-└── README.md                       # Project documentation
+├── requirements.txt                 # Python dependencies
+└── README.md                        # Project documentation
 ```
 
 ---
@@ -33,10 +32,10 @@ CSE145ML-main/
 
 This project uses the **BUOWSET** dataset:
 
-* **Classes**: Cluck, Coocoo, Twitter, Alarm, Chick Begging, no\_buow
-* **Format**: WAV audio files + metadata CSV
-* **Metadata**: `meta/metadata.csv` with fold info
-* **Splits**: Folds 0-2 = training, Fold 3 = validation
+* **Classes**: Cluck, Coocoo, Twitter, Alarm, Chick Begging, no_buow  
+* **Format**: WAV audio files + metadata CSV  
+* **Metadata**: `meta/metadata.csv` with fold info  
+* **Splits**: Folds 0-2 = training, Fold 3 = validation  
 
 ---
 
@@ -50,108 +49,102 @@ pip install -r requirements.txt
 
 > 💡 *Windows users should install `soundfile` manually if torchaudio fails.*
 
-### 2. Train Models
-
-#### ProxylessNAS:
+### 2. Train Model
 
 ```bash
-python scripts/train_proxylessnas.py
+python scripts/train_tinycnn.py
 ```
 
-#### MobileNetV2:
-
-```bash
-python scripts/train_mobilenetv2.py
-```
+This will train the **TinyCNN model**, which is used for final STM32 deployment.
 
 ---
 
-## 🔢 Evaluate Models
+## 🔢 Evaluate Model
 
 ```bash
 python scripts/test.py
 ```
 
 Outputs:
-
 * Accuracy
 * Precision / Recall / F1
 * Confusion matrix
 
-Results are saved to the `Images/` directory.
+Results are saved to the `graphs/` directory.
 
 ---
 
 ## 📆 Model Export
 
-### Export to ONNX
+The Custom-TinyCNN model is exported using the `TinyCNN-to-TfLite.py` script. This script handles the complete flow from a PyTorch `.pth` model to a TFLite `.tflite` file, and generates a C header (`.h`) file for STM32 deployment.
+
+To export the model:
 
 ```bash
-python scripts/export_to_onnx.py
+python TinyCNN-to-TfLite.py
 ```
 
-### Convert to TFLite
-
-```bash
-python scripts/convert_to_tflite.py
-```
+This will:
+- Load the TinyCNN PyTorch model
+- Convert it to TensorFlow Lite format
+- Apply post-training quantization
+- Generate:
+  - `buow_tinycnn.tflite`
+  - `buow_tinycnn.h` (for use with TF-Lite Micro on STM32)
 
 ---
 
-## Model Quantization
+## 🔧 Model Quantization
 
-This project uses the relatively new [AI-Edge-Torch](https://github.com/google-ai-edge/ai-edge-torch) library by Google to convert PyTorch models to TFLite models, with options for `int8` quantization. Package management becomes unmanageable easily with this library, so I recommend the following:
+Quantization is performed during TFLite conversion using **TensorFlow Lite’s post-training quantization**. Specifically:
 
-Create a fresh virtual environment and activate it:
+- Quantization mode: `tf.lite.Optimize.DEFAULT`
+- Resulting model size: ~**11KB**
+- Optimized for **low memory and flash usage** suitable for STM32 deployment
 
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-Install the required dependencies. Note that this may take a long time (~20 min):
-
-```bash
-pip install -r https://raw.githubusercontent.com/google-ai-edge/ai-edge-torch/main/requirements.txt
-pip install ai-edge-torch-nightly
-```
-
-Convert and quantize the PyTorch model:
-
-```bash
-python tflite_quantize.py -model_type={ProxylessNAS OR MobileNetV2\} -model_path={PATH_TO_MODEL_PTH\} -target_path={PATH_TO_EXPORT_TO}
-```
-This will produce two files, consisting of the PyTorch model converted to TFLite format with and without int8 quantization. 
+Quantization is built into the `TinyCNN-to-TfLite.py` script and requires no additional tooling.
 
 ---
+
+## 📲 STM32 Deployment
+
+The final quantized model (`buow_tinycnn.tflite`) is compiled into a C header file (`buow_tinycnn.h`) using:
+
+```bash
+xxd -i buow_tinycnn.tflite > buow_tinycnn.h
+```
+
+This header can be included directly in embedded C projects using **TF-Lite Micro**.
+
+> This is the **only model used for deployment**.  
+> All other models (e.g., MobileNetV2, ProxylessNAS) were used for baseline comparison only and are **not deployed**.
+
+---
+
 ## 📊 Sample Results
 
-| Metric   | ProxylessNAS | MobileNetV2 |
-| -------- | ------------ | ----------- |
-| Accuracy | 89.5%        | 88.2%       |
-| F1-Score | 0.89         | 0.87        |
+| Metric   | ProxylessNAS | MobileNetV2 | TinyCNN |
+| -------- | ------------ | ----------- | ------- |
+| Accuracy | 89.5%        | 88.2%       | 87.1%   |
+| F1-Score | 0.89         | 0.87        | 0.86    |
 
-Visual results in `Images/precision_recall_f1.png`
+> TinyCNN offers a compact trade-off with deployment feasibility on embedded hardware.
 
 ---
 
 ## 🧠 Models Used
 
-* **MobileNetV2**: Efficient CNN for mobile inference
-* **ProxylessNAS**: NAS-optimized CNN for embedded applications
-
-Model formats:
-
-* `.pth` (PyTorch)
-* `.onnx` (ONNX)
-* `.tflite` (TensorFlow Lite)
+* **Custom-TinyCNN** (🟢 Deployed): Compact, purpose-built CNN for real-time classification on STM32H747I-DISCO (~11KB with quantization)  
+* **MobileNetV2** (🔵 Benchmark only): Lightweight mobile CNN used for baseline performance comparison  
+* **ProxylessNAS** (🔵 Benchmark only): NAS-optimized CNN evaluated during early experiments  
 
 ---
 
 ## 🤖 Authors
 
-* **Abhay Lal** – M.S. CSE, UC San Diego
-* **Zach Lawrence** – B.S. Computer Science, UC San Diego
-* **Max Shen** – B.S. Computer Engineering, UC San Diego
+* **Abhay Lal** – M.S. CSE, UC San Diego  
+* **Zach Lawrence** – B.S. Computer Science, UC San Diego  
+* **Max Shen** – B.S. Computer Engineering, UC San Diego  
 
 ---
 
@@ -163,4 +156,4 @@ MIT License. Feel free to use and modify.
 
 ## 📚 Acknowledgements
 
-Special thanks to the CSE 145/237D Embedded System Design Project course instructors at UC San Diego for project guidance and to the creators of BUOWSET for providing the dataset.Also special mention to Ludwig for initiating this project and being a helpful mentor to work with. 
+Special thanks to the CSE 145/237D Embedded System Design Project course instructors at UC San Diego for project guidance and to the creators of BUOWSET for providing the dataset. Also special mention to Ludwig for initiating this project and being a helpful mentor to work with.
