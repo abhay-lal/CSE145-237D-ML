@@ -262,6 +262,44 @@
       </a>
     </li>
   </ul>
+<!-- ========= DEMO VIDEO SECTION ========= -->
+<section id="demo-video">
+  <h2 class="section-title">TinyML Video Presentation</h2>
+  <div class="video-container">
+    <iframe
+      src="https://www.youtube.com/embed/cms32KXm1s4"
+      title="Burrowing Owl TinyML Demo"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+</section>
+
+<style>
+  /* Responsive 16:9 video embed */
+  .video-container {
+    position: relative;
+    width: 100%;
+    /* 9/16 = 56.25% for 16:9 aspect ratio */
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  /* Optional: style the section title to match */
+  #demo-video .section-title {
+    margin-bottom: 0.75rem;
+  }
+</style>
 
   <!-- Documentation & Reports -->
   <h3>Documentation &amp; Reports</h3>
